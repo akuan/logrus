@@ -492,8 +492,8 @@ Situation when locking is not needed includes:
      (Refer to http://www.notthewizard.com/2014/06/17/are-files-appends-really-atomic/)
 #### akuan Add feture
 Add two option on TextFormater:
-DisableQuoteFields   (Refer to https://github.com/ahrtr/logrus) 
-SkipFixFiledName cut down log output not show time,level,msg filed name and "=" if set SkipFixFiledName true the output like bellow:
+* DisableQuoteFields   (Refer to https://github.com/ahrtr/logrus) 
+* SkipFixFiledName cut down log output not show time,level,msg filed name and "=" if set SkipFixFiledName true the output like bellow:
 ``` text
 2019-12-13 13:56:48.497 [debug] logrus.Debug Start...
 ```
