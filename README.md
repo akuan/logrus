@@ -493,7 +493,7 @@ Situation when locking is not needed includes:
 #### akuan Add feture
 Add two option on TextFormater:
 * DisableQuoteFields   (Refer to https://github.com/ahrtr/logrus) 
-* SkipFixFiledName cut down log output not show time,level,msg filed name and "=" if set SkipFixFiledName true the output like bellow:
+* SkipFixFiledName cut down log output. do not show time level and msg filed name .if set SkipFixFiledName option to true, the log output will like bellow:
 ``` text
 2019-12-13 13:56:48.497 [debug] logrus.Debug Start...
 ```
