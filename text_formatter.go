@@ -50,6 +50,9 @@ type TextFormatter struct {
 
 	// TimestampFormat to use for display when a full timestamp is printed
 	TimestampFormat string
+	// DisableQuoteFields will not wrap fields in quotes if true.
+	// Instead, the log message will be written directly.
+	DisableQuoteFields bool
 
 	// The fields are sorted by default for a consistent output. For applications
 	// that log extremely frequently and don't use the JSON formatter this may not
@@ -69,6 +72,8 @@ type TextFormatter struct {
 	// QuoteEmptyFields will wrap empty fields in quotes if true
 	QuoteEmptyFields bool
 
+	//Skip time,level,msg field name
+	SkipFixFiledName bool
 	// Whether the logger's out is to a terminal
 	isTerminal bool
 
@@ -292,6 +297,9 @@ func (f *TextFormatter) needsQuoting(text string) bool {
 	if f.QuoteEmptyFields && len(text) == 0 {
 		return true
 	}
+	if f.DisableQuoteFields {
+		return false
+	}
 	for _, ch := range text {
 		if !((ch >= 'a' && ch <= 'z') ||
 			(ch >= 'A' && ch <= 'Z') ||
@@ -307,9 +315,24 @@ func (f *TextFormatter) appendKeyValue(b *bytes.Buffer, key string, value interf
 	if b.Len() > 0 {
 		b.WriteByte(' ')
 	}
-	b.WriteString(key)
-	b.WriteByte('=')
-	f.appendValue(b, value)
+	if f.SkipFixFiledName {
+		switch {
+		case key == f.FieldMap.resolve(FieldKeyTime):
+			f.appendValue(b, value)
+		case key == f.FieldMap.resolve(FieldKeyLevel):
+			f.appendValue(b, fmt.Sprintf("[%s]", value))
+		case key == f.FieldMap.resolve(FieldKeyMsg):
+			f.appendValue(b, value)
+		default:
+			b.WriteString(key)
+			b.WriteByte('=')
+			f.appendValue(b, value)
+		}
+	} else {
+		b.WriteString(key)
+		b.WriteByte('=')
+		f.appendValue(b, value)
+	}
 }
 
 func (f *TextFormatter) appendValue(b *bytes.Buffer, value interface{}) {
